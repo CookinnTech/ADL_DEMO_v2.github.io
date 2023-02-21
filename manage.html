@@ -1,0 +1,567 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <title>ADL WEB DEMO</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="index.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+ 
+<body style="padding-left: 250px;padding-right: 250px;padding-top: 50px">
+
+    <div class="rowHeader">
+        <div class="columnHeader">
+            <a href="index.html">
+                <img style="float: left;height: 85px;" src="adl_logo.svg" alt="ADL">
+            </a>
+            
+        </div>
+        <div class="columnHeader">
+            <h6 id="date" style= "margin-top: 20px;color: black; text-align: center;font-size: 28px;"></h6>
+            <h6 id="time" style= "color: black; text-align: center; font-size: 19px;"><h6>
+        </div>
+        <div class="columnHeader">
+            <img style="float: right; height: 60px; margin-top: 25px;" src="profile_icon.svg" alt="Profil">
+            <a href="index.html" style="float: right;padding: 45px;color: black; font-weight: bolder;">Admin</a>
+            <p style="float: right;padding-top: 45px; padding-left: 45px; padding-bottom: 45px; color: black; font-weight: bolder;">Dashboard</p>
+        </div>
+    </div>
+
+    <h1 style="text-align: center;">Yönet</h1>
+
+    
+    <div class="row">
+        <div class="column">
+            <div class="searchItemBox" style="background: #BEE4F0;">
+                <div class="row">
+                    <div class="column">
+                        <button class="actionButtons" onclick="addLocationPopup()">Lokasyon Oluştur</button>
+                        <p class="searchTitle">Lokasyon</p>
+                        <input class="searchBar" type="text" id="search-input-locations" placeholder="Lokasyon Ara...">
+                        <table id="locationsTable" cellpadding="10" cellspacing="2" border="0" bgcolor="#BEE4F0" width="100%" align="center">
+                            <thead>
+                                <tr>
+                                    <th>Lokasyon Adı</th>
+                                </tr>
+                            </thead>
+                            <tbody id="locationsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="column">
+            <div class="searchItemBox" style="background: #71DE9F;">
+                <div class="row">
+                    <div class="column">
+                        <button class="actionButtons" onclick="addUserPopup()">Çalışan Oluştur</button>
+                        <p class="searchTitle">Çalışan</p>
+                        <input class="searchBar" type="text" id="search-input-users" placeholder="Kullanıcı Ara...">
+                        <table id="usersTable" cellpadding="10" cellspacing="2" border="0" bgcolor="#71DE9F" width="100%" align="center">
+                            <thead>
+                                <tr>
+                                    <th>Çalışan Adı</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div id="popupItems" class="popup">
+        <div class="popup-content">
+            <span onclick="closeFunction()" class="close">&times;</span>
+            <div style="padding-left: 40px; padding-right: 40px; padding-top: 45px; padding-bottom: 40px;">
+                <p class="searchTitle">Detaylar</p>
+                <table id="popupTableItem" class="popup-table" cellpadding="10" cellspacing="2" border="0" bgcolor="#FFF5C0" width="100%" align="center">
+                    <thead>
+                        <tr>
+                            <th>Ürün</th>
+                            <th>Tür</th>
+                            <th>Marka</th>
+                            <th>Model</th>
+                            <th>Seri No</th>
+                            <th>Konum</th>
+                            <th>Zimmetli Kişi</th>
+                        </tr>
+                    </thead>
+                        <tbody id="popupTableBodyItem"></tbody>
+                </table>
+                <button class="actionButtons" onclick="itemPopupTransfer()">Transfer Oluştur</button>
+                <button class="actionButtons" onclick="itemPopupAssign()">Zimmet Oluştur</button>
+                <p class="searchTitle" style=" margin-top: 40px;">Loglar</p>
+                <table id="popupTableItemLogs" class="popup-table" cellpadding="10" cellspacing="2" border="0" bgcolor="#BEE4F0" width="100%" align="center">
+                    <thead>
+                        <tr>
+                            <th>Ürün</th>
+                            <th>İşlem</th>
+                            <th>Detay</th>
+                            <th>Tarih</th>
+                            <th>Kullanıcı</th>
+                        </tr>
+                    </thead>
+                        <tbody id="popupTableBodyItemLogs"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="popupLocations" class="popup">
+        <div class="popup-content">
+            <span onclick="closeFunction()" class="close">&times;</span>
+            <div style="padding-left: 40px; padding-right: 40px; padding-top: 45px; padding-bottom: 80px;">
+                <p id="itemLocationTitle" class="searchTitle" style="text-align: center;">Lokasyon</p>
+                <button class="downloadButton" id="downloadBtn" onclick="downloadExcel()">İndir (XLS)</button>
+                <table id="logsForItemTable" class="popup-table" cellpadding="10" cellspacing="2" border="0" bgcolor="#FFF5C0" width="100%" align="center">
+                    <thead>
+                        <tr>
+                            <th>Ürün</th>
+                            <th>Tür</th>
+                            <th>Marka</th>
+                            <th>Model</th>
+                            <th>Seri No</th>
+                            <th>Konum</th>
+                            <th>Zimmetli Kişi</th>
+                        </tr>
+                    </thead>
+                        <tbody id="tableRowItem"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="popupUsers" class="popup">
+        <div class="popup-content">
+            <span onclick="closeFunction()" class="close">&times;</span>
+            <div style="padding-left: 40px; padding-right: 40px; padding-top: 45px; padding-bottom: 80px;">
+                <p class="searchTitle" style="text-align: center;">Kullanıcı</p>
+                <button class="downloadButton" id="downloadBtn" onclick="downloadExcel()">İndir (XLS)</button>
+                <table id="logsForItemTable" class="popup-table" cellpadding="10" cellspacing="2" border="0" bgcolor="#FFF5C0" width="100%" align="center">
+                    <thead>
+                        <tr>
+                            <th>Ürün</th>
+                            <th>Tür</th>
+                            <th>Marka</th>
+                            <th>Model</th>
+                            <th>Seri No</th>
+                            <th>Konum</th>
+                            <th>Zimmetli Kişi</th>
+                        </tr>
+                    </thead>
+                        <tbody id="tableRowUserBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="popupAddLocation" class="popup">
+        <div class="popup-content">
+            <span onclick="closeFunction()" class="close">&times;</span>
+            
+            <div style="padding-left: 40px; padding-right: 40px; padding-top: 45px; padding-bottom: 80px;">
+                <p class="searchTitle" style="text-align: center;">Lokasyon Ekle</p>
+                <div class="row">
+                    <div class="column">
+                        <select class="inputBar" name="city" id="new-city-select">
+                            <option value="" disabled selected>İl seçiniz</option>
+                            <option value="Antalya">Antalya</option>
+                            <option value="Ankara">Ankara</option>
+                            <option value="İstanbul">İstanbul</option>
+                            <option value="İzmir">İzmir</option>
+                        </select>
+                    </div>
+                    <div class="column">
+                        <input class="inputBar" type="text" id="new-location-name" placeholder="Lokasyon Adı...">
+                    </div>
+                </div>
+                <button class="actionButtons" style="margin-bottom: 30px;" onclick="saveNewLocation()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+    <div id="popupAddUser" class="popup">
+        <div class="popup-content">
+            <span onclick="closeFunction()" class="close">&times;</span>
+            <div style="padding-left: 40px; padding-right: 40px; padding-top: 45px; padding-bottom: 80px;">
+                <p class="searchTitle" style="text-align: center;">Çalışan Ekle</p>
+                <div class="row">
+                    <div class="column">
+                        <input class="inputBar" type="text" id="new-user-firstName" placeholder="Çalışan Adı...">
+                    </div>
+                    <div class="column">
+                        <input class="inputBar" type="text" id="new-user-lastName" placeholder="Çalışan Soyadı...">
+                    </div>
+                </div>
+                <button class="actionButtons" style="margin-bottom: 30px;" onclick="saveNewUser()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.2/dist/FileSaver.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/table2csv@0.2.3/dist/table2csv.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-database.js"></script>
+    <script>
+        function updateClock() {
+            var now = new Date(),
+            months = ['January', 'February', '...'];
+            time = now.getHours() + ':' + now.getMinutes(),
+                            date = [now.getDate(), 
+                            months[now.getMonth()],
+                            now.getFullYear()].join(' ');
+            
+            document.getElementById('time').innerHTML = time;
+            document.getElementById('date').innerHTML = date;
+            
+            setTimeout(updateClock, 1000);
+        }
+        updateClock();
+        var firebaseConfig = {
+            apiKey: "AIzaSyDMdTDMDh88xtXQTnBMmrg9yXxzFvlN7ZE",
+            authDomain: "adl-database.firebaseapp.com",
+            databaseURL: "https://adl-database-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "adl-database",
+            storageBucket: "adl-database.appspot.com",
+            messagingSenderId: "634040198549",
+            appId: "1:634040198549:web:48d13623b60e1a31b4029c"
+            };
+            firebase.initializeApp(firebaseConfig);
+            
+            //Users Table Fill
+            var userTableBody = '<tbody>'
+                var usersList = [];
+                var itemsRef = firebase.database().ref('Users');
+                itemsRef.on('value', function(snapshot) {
+                    snapshot.forEach(function(childSnapshot) {
+                        var childData = childSnapshot.val();
+                        if(!usersList.includes(childData.firstName + ' ' + childData.lastName)){
+                            userTableBody+= '<tr style="cursor: pointer">';
+                            userTableBody+= '<td colspan=1>' + childData.firstName + ' ' + childData.lastName + '</td>';
+                            userTableBody+= '</tr>';
+                            usersList.push(childData.firstName + ' ' + childData.lastName);
+                        }
+                    });
+                    userTableBody+='</tbody>';
+                    document.getElementById('usersTableBody').innerHTML = userTableBody;
+                    attachClickEventUsers();
+                });
+                
+            //Items Table Fill
+            /*
+            var itemTableBody = '<tbody>'
+                var itemsList = [];
+                var itemsRef = firebase.database().ref('Items');
+                itemsRef.on('value', function(snapshot) {
+                    snapshot.forEach(function(childSnapshot) {
+                        var childData = childSnapshot.val();
+                        if(!itemsList.includes(childData.itemId)){
+                            itemTableBody+= '<tr style="cursor: pointer">';
+                            itemTableBody+= '<td colspan=1>' + childData.itemId + '</td>';
+                            itemTableBody+= '</tr>';
+                            itemsList.push(childData.itemId);
+                        }
+                    });
+                    itemTableBody+='</tbody>';
+                    document.getElementById('itemsTableBody').innerHTML = itemTableBody;
+                    attachClickEventItems();
+                });
+                */
+            //Location Table Fill
+            var locationTableBody = '<tbody>'
+                var locationsList = [];
+                var itemsRef = firebase.database().ref('Locations');
+                itemsRef.on('value', function(snapshot) {
+                    snapshot.forEach(function(childSnapshot) {
+                        var childData = childSnapshot.val();
+                        if(!locationsList.includes(childData.city + ' - ' + childData.location)){
+                            locationTableBody+= '<tr style="cursor: pointer">';
+                                locationTableBody+= '<td colspan=1>' + childData.city + ' - ' + childData.location + '</td>';
+                                locationTableBody+= '</tr>';
+                                locationsList.push(childData.city + ' - ' + childData.location);
+                        }
+                    });
+                    locationTableBody+='</tbody>';
+                    document.getElementById('locationsTableBody').innerHTML = locationTableBody;
+                    attachClickEventLocations();
+                });
+
+
+                //Search Items
+                /*
+                var itemsTable = document.getElementById("itemsTable");
+                var searchInputItems = document.getElementById("search-input-items");
+                function searchTableItems() {
+                // Get the search input value
+                var searchValue = searchInputItems.value.toLowerCase();
+
+                // Loop through all table rows
+                for (var i = 0; i < itemsTable.rows.length; i++) {
+                    var row = itemsTable.rows[i];
+                    var found = false;
+
+                    // Loop through all cells in the row
+                    for (var j = 0; j < row.cells.length; j++) {
+                    var cell = row.cells[j];
+
+                    // Check if the cell's text contains the search value
+                    if (cell.textContent.toLowerCase().indexOf(searchValue) > -1) {
+                        found = true;
+                        break;
+                    }
+                    }
+
+                    // Show or hide the row based on whether it contains the search value
+                    if (found) {
+                    row.style.display = "";
+                    } else {
+                    row.style.display = "none";
+                    }
+                }
+                }
+                searchInputItems.addEventListener("input", searchTableItems);
+*/
+                //Search Users
+                var usersTable = document.getElementById("usersTable");
+                var searchInputUsers = document.getElementById("search-input-users");
+                function searchTableUsers() {
+                // Get the search input value
+                var searchValue = searchInputUsers.value.toLowerCase();
+
+                // Loop through all table rows
+                for (var i = 0; i < usersTable.rows.length; i++) {
+                    var row = usersTable.rows[i];
+                    var found = false;
+
+                    // Loop through all cells in the row
+                    for (var j = 0; j < row.cells.length; j++) {
+                    var cell = row.cells[j];
+
+                    // Check if the cell's text contains the search value
+                    if (cell.textContent.toLowerCase().indexOf(searchValue) > -1) {
+                        found = true;
+                        break;
+                    }
+                    }
+
+                    // Show or hide the row based on whether it contains the search value
+                    if (found) {
+                    row.style.display = "";
+                    } else {
+                    row.style.display = "none";
+                    }
+                }
+                }
+                searchInputUsers.addEventListener("input", searchTableUsers);
+
+                
+                //Search Locations
+                var locationsTable = document.getElementById("locationsTable");
+                var searchInputLocations = document.getElementById("search-input-locations");
+                function searchTableLocations() {
+                // Get the search input value
+                var searchValue = searchInputLocations.value.toLowerCase();
+
+                // Loop through all table rows
+                for (var i = 0; i < locationsTable.rows.length; i++) {
+                    var row = locationsTable.rows[i];
+                    var found = false;
+
+                    // Loop through all cells in the row
+                    for (var j = 0; j < row.cells.length; j++) {
+                    var cell = row.cells[j];
+
+                    // Check if the cell's text contains the search value
+                    if (cell.textContent.toLowerCase().indexOf(searchValue) > -1) {
+                        found = true;
+                        break;
+                    }
+                    }
+
+                    // Show or hide the row based on whether it contains the search value
+                    if (found) {
+                    row.style.display = "";
+                    } else {
+                    row.style.display = "none";
+                    }
+                }
+                }
+                searchInputLocations.addEventListener("input", searchTableLocations);
+                
+                function closeFunction() {
+                    var popup = document.getElementById("popupItems");
+                    popup.style.display = "none";
+                    var popup = document.getElementById("popupLocations");
+                    popup.style.display = "none";
+                    var popup = document.getElementById("popupUsers");
+                    popup.style.display = "none";
+                    var popup = document.getElementById("popupAddLocation");
+                    popup.style.display = "none";
+                    var popup = document.getElementById("popupAddUser");
+                    popup.style.display = "none";
+                }
+                //Add row actions
+                function onRowClickItems(event) {
+                    var row = event.target;
+                    console.log(row.innerHTML);
+
+                var popupItemTableBody = '<tbody>'
+                var itemsRef = firebase.database().ref('Items/'+row.innerHTML);
+                itemsRef.on('value', function(snapshot) {
+                        var childData = snapshot.val();
+                            popupItemTableBody+= '<tr>';
+                                popupItemTableBody+= '<td colspan=1>' + childData.itemId + '</td>';
+                                popupItemTableBody+= '<td colspan=1>' + childData.itemCategory + '</td>';
+                                popupItemTableBody+= '<td colspan=1>' + childData.itemBrand + '</td>';
+                                popupItemTableBody+= '<td colspan=1>' + childData.itemModel + '</td>';
+                                popupItemTableBody+= '<td colspan=1>' + childData.itemSerialNo + '</td>';
+                                popupItemTableBody+= '<td colspan=1>' + childData.itemLocation + '</td>';
+                                popupItemTableBody+= '<td colspan=1>' + childData.itemAssignedTo + '</td>';
+                                popupItemTableBody+= '</tr>';
+                            usersList.push(childData.itemAssignedTo);
+                    popupItemTableBody+='</tbody>';
+                    document.getElementById('popupTableBodyItem').innerHTML = popupItemTableBody;
+
+                    
+                    var popupItemLogTableBody = '<tbody>'
+                        var itemsList = [];
+                        var leadsRef =  firebase.database().ref('Logs/' + row.innerHTML);
+                        leadsRef.on('value', function(snapshot) {
+                            snapshot.forEach(function(childSnapshot) {
+                                    var childData = childSnapshot.val();
+                                        console.log(childData);
+                                        popupItemLogTableBody+= '<tr>';
+                                        popupItemLogTableBody+= '<td>' + childData.logItem + '</td>';
+                                        popupItemLogTableBody+= '<td>' + childData.logAction + '</td>';
+                                        popupItemLogTableBody+= '<td>' + childData.logDetails + '</td>';
+                                        popupItemLogTableBody+= '<td>' + childData.logDate + '</td>';
+                                        popupItemLogTableBody+= '<td>' + childData.logUser + '</td>';
+                                        popupItemLogTableBody+= '</tr>';
+                                        itemsList.push(childData.logDate);
+                            });
+                            popupItemLogTableBody+='</tbody>';
+                            document.getElementById('popupTableBodyItemLogs').innerHTML = popupItemLogTableBody;
+                        });
+                    attachClickEventUsers();
+                });
+                
+                                    
+                    var modal = document.getElementById("popupItems");
+                    modal.style.display = "block";
+                }
+                function onRowClickLocations(event) {
+                    var row = event.target;
+                    console.log(row.innerHTML);
+
+                    var k = '<tbody>'
+                        var itemsRef = firebase.database().ref('Items');
+                        itemsRef.on('value', function(snapshot) {
+                            snapshot.forEach(function(childSnapshot) {
+                                var childData = childSnapshot.val();
+                                if(childData.itemLocation == row.innerHTML){
+                                    k+= '<tr>';
+                                        k+= '<td colspan=1>' + childData.itemId + '</td>';
+                                        k+= '<td colspan=1>' + childData.itemCategory + '</td>';
+                                        k+= '<td colspan=1>' + childData.itemBrand + '</td>';
+                                        k+= '<td colspan=1>' + childData.itemModel + '</td>';
+                                        k+= '<td colspan=1>' + childData.itemSerialNo + '</td>';
+                                        k+= '<td colspan=1>' + childData.itemLocation + '</td>';
+                                        k+= '<td colspan=1>' + childData.itemAssignedTo + '</td>';
+                                    k+= '</tr>';
+                                }
+                            });
+                            k+='</tbody>';
+                            document.getElementById('tableRowItem').innerHTML = k;
+                            document.getElementById('itemLocationTitle').innerHTML = row.innerHTML + " Lokasyonundaki Ürünler"
+                        });
+                                    
+                    var modal = document.getElementById("popupLocations");
+                    modal.style.display = "block";
+                }
+                function onRowClickUsers(event) {
+                    var row = event.target;
+                    console.log(row.innerHTML);
+
+                    var k = '<tbody>'
+                        var itemsRef = firebase.database().ref('Items');
+                        itemsRef.on('value', function(snapshot) {
+                            snapshot.forEach(function(childSnapshot) {
+                                var childData = childSnapshot.val();
+                                if(childData.itemAssignedTo == row.innerHTML){
+                                    k+= '<tr>';
+                                        k+= '<td colspan=1>' + childData.itemId + '</td>';
+                                        k+= '<td colspan=1>' + childData.itemCategory + '</td>';
+                                        k+= '<td colspan=1>' + childData.itemBrand + '</td>';
+                                        k+= '<td colspan=1>' + childData.itemModel + '</td>';
+                                        k+= '<td colspan=1>' + childData.itemSerialNo + '</td>';
+                                        k+= '<td colspan=1>' + childData.itemLocation + '</td>';
+                                        k+= '<td colspan=1>' + childData.itemAssignedTo + '</td>';
+                                    k+= '</tr>';
+                                }
+                            });
+                            k+='</tbody>';
+                            document.getElementById('tableRowUserBody').innerHTML = k;
+                            document.getElementById('itemLocationTitle').innerHTML = row.innerHTML + " Kişisine Zimmetli Ürünler"
+                        });
+                                    
+                    var modal = document.getElementById("popupUsers");
+                    modal.style.display = "block";
+                }
+
+                function attachClickEventItems() {
+                    var rows = document.querySelectorAll("#itemsTable tbody tr");
+                    for (var i = 0; i < rows.length; i++) {
+                        rows[i].addEventListener("click", onRowClickItems);
+                    }
+                }
+                function attachClickEventLocations() {
+                    var rows = document.querySelectorAll("#locationsTable tbody tr");
+                    for (var i = 0; i < rows.length; i++) {
+                        rows[i].addEventListener("click", onRowClickLocations);
+                    }
+                }
+                function attachClickEventUsers() {
+                    var rows = document.querySelectorAll("#usersTable tbody tr");
+                    for (var i = 0; i < rows.length; i++) {
+                        rows[i].addEventListener("click", onRowClickUsers);
+                    }
+                }
+
+                function addLocationPopup(){
+                    var modal = document.getElementById("popupAddLocation");
+                    modal.style.display = "block";
+                }
+
+                function addUserPopup(){
+                    var modal = document.getElementById("popupAddUser");
+                    modal.style.display = "block";
+                }
+
+                function saveNewLocation(){
+                    firebase.database().ref("Locations/" + document.getElementById("new-city-select").value + ' - ' + document.getElementById("new-location-name").value).set({
+                        city:document.getElementById("new-city-select").value,
+                        location:document.getElementById("new-location-name").value
+                    });
+                    var modal = document.getElementById("popupAddLocation");
+                    modal.style.display = "none";
+                }
+
+                function saveNewUser(){
+                    firebase.database().ref("Users/" + document.getElementById("new-user-firstName").value + ' ' + document.getElementById("new-user-lastName").value).set({
+                        firstName:document.getElementById("new-user-firstName").value,
+                        lastName:document.getElementById("new-user-lastName").value
+                    });
+                    var modal = document.getElementById("popupAddUser");
+                    modal.style.display = "none";
+                }
+
+    </script>
+        
+</body>

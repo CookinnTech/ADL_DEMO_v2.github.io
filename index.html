@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ADL WEB DEMO</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
+ 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+        crossorigin="anonymous">
+
+    <link rel="stylesheet" href="index.css">
+</head>
+ 
+<body style="padding-left: 250px;padding-right: 250px;padding-top: 50px">
+   
+    <div class="rowHeader">
+        <div class="columnHeader">
+            <img style="float: left;height: 85px;" src="adl_logo.svg" alt="ADL">
+        </div>
+        <div class="columnHeader">
+            <h6 id="date" style= "margin-top: 20px;color: black; text-align: center;font-size: 28px;"></h6>
+            <h6 id="time" style= "color: black; text-align: center; font-size: 19px;"><h6>
+        </div>
+        <div class="columnHeader">
+            <img style="float: right; height: 60px; margin-top: 25px;" src="profile_icon.svg" alt="Profil">
+            <a href="index.html" style="float: right;padding: 45px;color: black; font-weight: bolder;">Admin</a>
+            <p style="float: right;padding-top: 45px; padding-left: 45px; padding-bottom: 45px; color: black; font-weight: bolder;">Dashboard</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="column">
+            <div onclick="location.href='logs.html';" class="smallItemBox" style="background: #BEE4F0;cursor: pointer;">
+                <div class="row">
+                    <div class="column">
+                        <h1>Hareketler</h1>
+                        <h2 id="totalLogCount"></h2>
+                        <h3>33 Yeni Zimmet</h3>
+                        <h3>122 Transfer</h3>
+                    </div>
+                    <div class="column">
+                        <img style="float: right;" src="locations_icon.svg" alt="Envanter">
+                    </div>
+                </div>
+            </div>
+            <div onclick="location.href='manage.html';" class="smallItemBox" style="background: #6D6D6D;cursor: pointer;">
+                <div class="row">
+                    <div class="column">
+                        <h1>Yönet</h1>
+                        <h3>Envanterinizi yönetin</h3>
+                    </div>
+                    <div class="column">
+                        <img style="float: right;" src="Vector.svg" alt="Envanter">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="column">
+            <div onclick="location.href='inventory.html';"  class="bigItemBox" style="background: #FFF5C0;cursor: pointer;">
+                <div class="row">
+                    <div class="column">
+                        <h1>Envanter</h1>
+                        <h2 id="totalItemCount"></h2>
+                        <h3 id="itemCategories"></h3>
+                    </div>
+                    <div class="column">
+                        <img style="float: right;" src="inventory_icon.svg" alt="Envanter">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+ 
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-database.js"></script>
+    <script>
+        function updateClock() {
+            var now = new Date(),
+                months = ['January', 'February', '...'];
+                time = now.getHours() + ':' + now.getMinutes(),
+        
+                date = [now.getDate(), 
+                        months[now.getMonth()],
+                        now.getFullYear()].join(' ');
+        
+            document.getElementById('time').innerHTML = time;
+            document.getElementById('date').innerHTML = date;
+        
+            setTimeout(updateClock, 1000);
+        }
+        updateClock();
+
+
+        var firebaseConfig = {
+            apiKey: "AIzaSyDMdTDMDh88xtXQTnBMmrg9yXxzFvlN7ZE",
+            authDomain: "adl-database.firebaseapp.com",
+            databaseURL: "https://adl-database-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "adl-database",
+            storageBucket: "adl-database.appspot.com",
+            messagingSenderId: "634040198549",
+            appId: "1:634040198549:web:48d13623b60e1a31b4029c"
+          };
+          // Initialize Firebase
+          firebase.initializeApp(firebaseConfig);
+          
+            let itemCounter = 0;
+            let logCounter = 0;
+            var itemCategories = [];
+            var finalCategoriesMap = new Map();
+
+              var itemsList = [];
+              var leadsRef = firebase.database().ref('Logs');
+              leadsRef.on('value', function(snapshot) {
+                  snapshot.forEach(function(childSnapshot) {
+                      childSnapshot.forEach(function(childChildSnapshot) {
+                          var childData = childChildSnapshot.val();
+                          if(!itemsList.includes(childData.logDate)){
+                              itemsList.push(childData.logDate);
+                          }
+                      });
+                  });
+                  document.getElementById('totalLogCount').innerHTML = itemsList.length + " Hareket";
+              });
+
+            
+            var leadsRef = firebase.database().ref('Items');
+            leadsRef.on('value', function(snapshot) {
+                snapshot.forEach(function(childSnapshot) {
+                    var childData = childSnapshot.val();
+                    itemCounter++;
+                    itemCategories.push(childData.itemCategory);
+                });
+                console.log(itemCategories);
+
+                for (i = 0; i < itemCategories.length; i++) {
+                    let categoryCounter = 0;
+                    let currentCategory = itemCategories[i];
+
+                    itemCategories.forEach(function(category) {
+                        if(currentCategory == category){
+                            categoryCounter++;
+                        }
+                    });
+                    if(!finalCategoriesMap.has(currentCategory)){
+                        finalCategoriesMap.set(currentCategory, categoryCounter);
+                    }
+                    console.log(finalCategoriesMap);
+                    categoryCounter = 0;
+                }
+                for (let [key, value] of finalCategoriesMap) {
+                    console.log(key + " = " + value);
+                    document.getElementById("itemCategories").innerHTML = document.getElementById('itemCategories').innerHTML + value+ " " + key + "<br/>";
+                }
+                document.getElementById("totalItemCount").innerHTML = itemCounter + " Ürün";
+            });
+    </script>
+</body>
+ 
+</html>
