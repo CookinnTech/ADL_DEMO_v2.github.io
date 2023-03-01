@@ -81,16 +81,15 @@
     <script>
         function updateClock() {
             var now = new Date(),
-                months = ['January', 'February', '...'];
-                time = now.getHours() + ':' + now.getMinutes(),
-        
-                date = [now.getDate(), 
-                        months[now.getMonth()],
-                        now.getFullYear()].join(' ');
-        
+                months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+                          'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
+                time = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0'),
+
+                date = now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+
             document.getElementById('time').innerHTML = time;
             document.getElementById('date').innerHTML = date;
-        
+
             setTimeout(updateClock, 1000);
         }
         updateClock();
